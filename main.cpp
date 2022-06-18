@@ -1,17 +1,50 @@
 #include <iostream>
+#include <string>
+#include <sqlite3.h>
 using namespace std;
 
+int callback(void *NotUsed, int argc, char **argv, char **azColName){
+    return 0;
+}
+
+void sql_call(string sql){
+    sqlite3* db;
+    int exit;
+    char *zErrMsg = 0;
+
+    exit = sqlite3_open("phonebook.db", &db);
+
+    if (exit) { 
+        
+        cout << "DB Open Error: " << sqlite3_errmsg(db) << endl; 
+        
+    } else {
+
+        cout << "Opened Database Successfully!" << endl; 
+    }
+
+
+    exit = sqlite3_exec(db, sql.c_str(), callback, 0, &zErrMsg);
+
+    sqlite3_close(db);
+}
+
+
+
 void addContact(){
-    char firstName[15];
+    string firstName;
     std::cout << "Enter a first name to add: ";
     std::cin >> firstName;
-    char lastName[15];
-    std::cout << "Enter a first name to add: ";
+    string lastName;
+    std::cout << "Enter a last name to add: ";
     std::cin >> lastName;
-    char phoneNumber[10];
-    std::cout << "Enter a first name to add: ";
+    string phoneNumber;
+    std::cout << "Enter a phonenumber to add: ";
     std::cin >> phoneNumber;
-    std::cout << "Name: " << firstName, lastName; 
+    string sql;
+    sql = "INSERT INTO PHONEBOOK (ID, FIRSTNAME, LASTNAME, PHONENUMBER) " \
+          "VALUES (" + firstName + ", " + lastName + ", " + phoneNumber + ")";
+    
 }
 
 void findContact(){
@@ -92,10 +125,9 @@ int main()
             deleteContact();
             break;
         case 5:
-            std::cout << "Case 5\n";
             con = false;
             break;
         default:
             break;
         }      
-}}
+    }}
